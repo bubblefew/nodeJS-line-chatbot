@@ -88,7 +88,7 @@ function handleMessageEvent(event) {
               action: {
                 type: "uri",
                 label: "Button",
-                uri: "https://example.com",
+                uri: "https://developers.line.biz/en/reference/messaging-api/#send-broadcast-message",
               },
             },
             {
