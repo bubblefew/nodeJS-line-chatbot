@@ -127,3 +127,131 @@ const loadCustomer = async (userId) => {
 app.listen(4000, () => {
   console.log("Listen on port 4000 !!");
 });
+
+
+const  flex = {
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "size": "full",
+    "aspectRatio": "20:13",
+    "aspectMode": "cover",
+    "action": {
+      "type": "uri",
+      "uri": "http://linecorp.com/"
+    },
+    "url": "https://plus.unsplash.com/premium_photo-1664202219850-0ed2a085aaa9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "Unlock Credit No: 256501140001",
+        "weight": "bold",
+        "size": "xs"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "lg",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "baseline",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "Customer Code: ",
+                "color": "#aaaaaa",
+                "size": "sm",
+                "flex": 4,
+                "margin": "xs",
+                "weight": "bold",
+                "style": "normal",
+                "decoration": "underline",
+                "position": "relative",
+                "align": "start",
+                "gravity": "top",
+                "wrap": true
+              },
+              {
+                "type": "text",
+                "text": "TH2100023 : จิระศักดิ์ เป็ดอร่อย",
+                "wrap": true,
+                "color": "#666666",
+                "size": "sm",
+                "flex": 5
+              }
+            ]
+          },
+          {
+            "type": "box",
+            "layout": "baseline",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "Amount CO :",
+                "color": "#aaaaaa",
+                "size": "xs",
+                "flex": 4,
+                "weight": "bold",
+                "style": "normal",
+                "decoration": "underline",
+                "position": "relative",
+                "align": "start",
+                "margin": "xs"
+              },
+              {
+                "type": "text",
+                "text": "500,000 Baht",
+                "wrap": true,
+                "color": "#666666",
+                "size": "sm",
+                "flex": 5
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "message",
+          "label": "Approve",
+          "text": "Approve"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "message",
+          "label": "Reject",
+          "text": "Reject"
+        }
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [],
+        "margin": "sm"
+      }
+    ],
+    "flex": 0
+  }
+}
