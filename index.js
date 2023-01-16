@@ -1,21 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const line = require("@line/bot-sdk");
-const dotenv = require("dotenv");
 const cors = require("cors");
 var https = require("https");
 var http = require("http");
-dotenv.config().parsed;
+
+const config = require("./config/configClient");
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-const config = {
-  channelSecret: process.env.SECRET_TOKEN,
-  channelAccessToken: process.env.ACCESS_TOKEN,
-};
 
 const client = new line.Client(config);
 
@@ -59,45 +54,10 @@ app.get("/test", (req, res) => {
   client
     .pushMessage(lineId, flexMsg)
     .then((res2) => {
-      res .json(flexMsg);
+      res.json(flexMsg);
     })
     .catch((err) => {
       console.log(err);
-    });
-});
-
-app.get("/Approve", (req, res) => {
-  let message = {
-    type: "text",
-    text: "Approve Complete",
-  };
-
-  const idLine = "U0d0e9e32d50828492ca9a9426c15f3d0";
-  client
-    .pushMessage(idLine, message)
-    .then((res2) => {
-      res.end();
-      // res.json({ message: message, res: res2 });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-});
-
-app.get("/Reject", (req, res) => {
-  let message = {
-    type: "text",
-    text: "Reject Complete",
-  };
-  const idLine = "U0d0e9e32d50828492ca9a9426c15f3d0";
-  client
-    .pushMessage(idLine, message)
-    .then((res2) => {
-      res.end();
-      // res.json({ message: message, res: res2 });
-    })
-    .catch((err) => {
-      console.error(err);
     });
 });
 app.get("/pushMSG/:id", (req, res) => {
@@ -180,22 +140,7 @@ function handleMessageEvent(event) {
     console.log("insert member");
   }
 
-  if (text === "Approve") {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "Approve Complete",
-    });
-  } else if (text === "Reject") {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "Reject Complete",
-    });
-  } else if (text === "hello") {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "Hello, world",
-    });
-  } else if (text === "push") {
+  if (text === "hello") {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "Hello, world",
@@ -213,7 +158,7 @@ function handleMessageEvent(event) {
       })
       .catch((err) => {
         console.error(err);
-      });
+      }); 
   } else if (text === "flex") {
     const flexmessage = {
       type: "flex",
