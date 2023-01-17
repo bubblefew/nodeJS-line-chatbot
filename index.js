@@ -2,8 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const line = require("@line/bot-sdk");
 const cors = require("cors");
-var https = require("https");
-var http = require("http");
 
 const config = require("./config/configClient");
 
@@ -14,58 +12,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const client = new line.Client(config);
 
-app.get("/test", (req, res) => {
-  const flexMsg = {
-    type: "template",
-    altText: "This is a buttons template",
-    template: {
-      type: "buttons",
-      thumbnailImageUrl: "https://example.com/bot/images/image.jpg",
-      imageAspectRatio: "rectangle",
-      imageSize: "cover",
-      imageBackgroundColor: "#FFFFFF",
-      title: "Menu",
-      text: "Please select",
-      defaultAction: {
-        type: "uri",
-        label: "View detail",
-        uri: "http://example.com/page/123",
-      },
-      actions: [
-        {
-          type: "postback",
-          label: "Buy",
-          data: "action=buy&itemid=123",
-        },
-        {
-          type: "postback",
-          label: "Add to cart",
-          data: "action=add&itemid=123",
-        },
-        {
-          type: "uri",
-          label: "View detail",
-          uri: "http://example.com/page/123",
-        },
-      ],
-    },
-  };
-  let lineId = "U0d0e9e32d50828492ca9a9426c15f3d0";
-  client
-    .pushMessage(lineId, flexMsg)
-    .then((res2) => {
-      res.json(flexMsg);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+app.post("/postback/:type", (req, res) => {
+  const { type } = req.params;
+  console.log(type);
 });
+
 app.get("/pushMSG/:id", (req, res) => {
   // res.status(200).json("server started!");
   const { id } = req.params;
   const message = {
     type: "template",
-    altText: "This is a buttons template",
+    altText: "คำขอรายการปลดล็อคเครดิตลิมิต",
     template: {
       type: "buttons",
       thumbnailImageUrl:
@@ -83,8 +40,8 @@ app.get("/pushMSG/:id", (req, res) => {
       actions: [
         {
           type: "postback",
-          label: "Approve",
-          data: "https://1c0d-161-246-72-2.ap.ngrok.io/Approve",
+          label: "action",
+          data: "action=buy&itemid=123",
         },
         {
           type: "postback",
@@ -113,7 +70,9 @@ app.get("/pushMSG/:id", (req, res) => {
 
 app.post("/webhook", (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
+    .then((result) => {
+      res.json(result);
+    })
     .catch((err) => {
       console.error(err);
       res.status(500).end();
@@ -123,6 +82,8 @@ app.post("/webhook", (req, res) => {
 function handleEvent(event) {
   if (event.type === "message" && event.message.type === "text") {
     handleMessageEvent(event);
+  } else if (event.type === "postback") {
+    console.log(event);
   } else {
     return Promise.resolve(null);
   }
@@ -132,60 +93,13 @@ function handleMessageEvent(event) {
   const message = event.message;
   const text = message.text;
   const senderId = event.source.userId;
+  const type = event.type;
   console.log(senderId);
-  // let countID = await checkId();
-  let countID = 0;
-
-  if (countID != 1) {
-    console.log("insert member");
-  }
-
   if (text === "hello") {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "Hello, world",
     });
-  } else if (text === "cast") {
-    const message = {
-      type: "text",
-      text: "Boardcast to user",
-    };
-
-    client
-      .broadcast(message)
-      .then((res) => {
-        console.log(res.body);
-      })
-      .catch((err) => {
-        console.error(err);
-      }); 
-  } else if (text === "flex") {
-    const flexmessage = {
-      type: "flex",
-      altText: "This is a Flex Message",
-      contents: {
-        type: "bubble",
-        body: {
-          type: "box",
-          layout: "vertical",
-          contents: [
-            {
-              type: "button",
-              style: "primary",
-              action: {
-                type: "uri",
-                label: "Button",
-                uri: "https://developers.line.biz/en/reference/messaging-api/#send-broadcast-message",
-              },
-            },
-            {
-              type: "separator",
-            },
-          ],
-        },
-      },
-    };
-    client.replyMessage(event.replyToken, flexmessage);
   } else {
     return client.replyMessage(event.replyToken, {
       type: "text",
