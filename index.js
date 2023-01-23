@@ -20,6 +20,9 @@ app.post("/postback/:type", (req, res) => {
 app.get("/pushMSG/:id", (req, res) => {
   // res.status(200).json("server started!");
   const { id } = req.params;
+  let cusCode = "TH1239o999";
+  let cusName = "Jilasak Sampaisit";
+  let reqNo = "202210001011";
   const message = {
     type: "template",
     altText: "คำขอรายการปลดล็อคเครดิตลิมิต",
@@ -30,8 +33,8 @@ app.get("/pushMSG/:id", (req, res) => {
       imageAspectRatio: "rectangle",
       imageSize: "cover",
       imageBackgroundColor: "#FFFFFF",
-      title: "Unlock Credit No: 256501140001",
-      text: "Customer Code:  TH2100023 : จิระศักดิ์ เป็ดอร่อย",
+      title: `Unlock Credit No: ${reqNo}`,
+      text: `Customer Code:  ${cusCode} : ${cusName} `,
       defaultAction: {
         type: "uri",
         label: "View detail",
