@@ -4,7 +4,7 @@ const line = require("@line/bot-sdk");
 const cors = require("cors");
 
 const config = require("./config/configClient");
-
+const url = "https://c883-115-31-128-170.ap.ngrok.io";
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -12,17 +12,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const client = new line.Client(config);
 
-app.post("/postback/:type", (req, res) => {
-  const { type } = req.params;
-  console.log(type);
+app.get("/index", (req, res) => {
+  res.json("Server started ").status(200);
 });
+
 
 app.get("/pushMSG/:id", (req, res) => {
   // res.status(200).json("server started!");
   const { id } = req.params;
-  let cusCode = "TH1239o999";
+  let cusCode = "TH64607007";
   let cusName = "Jilasak Sampaisit";
-  let reqNo = "202210001011";
+  let reqNo = "UCR-2023012300001";
   const message = {
     type: "template",
     altText: "คำขอรายการปลดล็อคเครดิตลิมิต",
@@ -43,18 +43,18 @@ app.get("/pushMSG/:id", (req, res) => {
       actions: [
         {
           type: "postback",
-          label: "action",
-          data: "action=buy&itemid=123",
+          label: "Approve",
+          data: `Approve&${reqNo}`,
         },
         {
           type: "postback",
           label: "Reject",
-          data: "https://1c0d-161-246-72-2.ap.ngrok.io/Reject",
+          data: `Reject&${reqNo}`,
         },
         {
           type: "uri",
           label: "View detail",
-          uri: "https://1c0d-161-246-72-2.ap.ngrok.io/Reject",
+          uri: `${url}/Reject`,
         },
       ],
     },
@@ -63,11 +63,12 @@ app.get("/pushMSG/:id", (req, res) => {
   client
     .pushMessage(id, message)
     .then((res2) => {
-      res.end();
+      res.status(200).end();
       // res.json({ message: message, res: res2 });
     })
     .catch((err) => {
       console.error(err);
+      res.status(400).end();
     });
 });
 
@@ -86,7 +87,25 @@ function handleEvent(event) {
   if (event.type === "message" && event.message.type === "text") {
     handleMessageEvent(event);
   } else if (event.type === "postback") {
-    console.log(event);
+    try {
+      let data = event.postback.data.split("&");
+      if (data[0] === "Approve") {
+        return client.replyMessage(event.replyToken, {
+          type: "text",
+          text: "Approve Complete",
+        });
+      } else if (data[0] === "Reject") {
+        return client.replyMessage(event.replyToken, {
+          type: "text",
+          text: "Reject complete",
+        });
+      }
+    } catch (error) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "Please contact ICT for resolve.",
+      });
+    }
   } else {
     return Promise.resolve(null);
   }
