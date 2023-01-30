@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const line = require("@line/bot-sdk");
 const cors = require("cors");
-
+const mysql = require("mysql2");
 const config = require("./config/configClient");
 const url = "https://c883-115-31-128-170.ap.ngrok.io";
 const app = express();
@@ -12,10 +12,39 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const client = new line.Client(config);
 
-app.get("/index", (req, res) => {
-  res.json("Server started ").status(200);
+var conn = mysql.createConnection({
+  host: "localhost",
+  port: "3333",
+  user: "root",
+  password: "root",
+  database: "is",
+  charset: "utf8mb4",
 });
 
+conn.connect(function (err) {
+  if (err) throw err;
+  console.log("Connected!");
+});
+
+
+
+app.get("/index", (req, res) => {
+  conn.connect(function (err) {
+    sql = `SELECT CCCONO,CCDIVI,CCCONM,CONCAT(TRIM(CCCONO),' : ',TRIM(CCDIVI),' : ',TRIM(CCCONM))  as COMPANY
+    FROM M3FDBPRD.CMNDIV
+    WHERE CCDIVI NOT IN  ('')
+    AND CCCONO IN ('10','500','600')
+    ORDER BY CCCONO`;
+    if (err) throw err;
+    console.log("Connected!");
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("Result: " + result[0].CCCONO);
+      res.json(result).status(200);
+    });
+  });
+  
+});
 
 app.get("/pushMSG/:id", (req, res) => {
   // res.status(200).json("server started!");
