@@ -4,7 +4,7 @@ const config = {
     port: "3333",
     user: "root",
     password: "root",
-    requestTimeout: 30000,
+    // requestTimeout: 30000,
     database: "IS",
     charset: "utf8mb4",
   },
