@@ -6,7 +6,7 @@ const client = new line.Client(config);
 
 module.exports.notiForRequest = async (req, res, next) => {
   try {
-    console.log('NotiForRequest');
+    console.log("NotiForRequest");
     const { cono, divi, reqno } = req.params;
     let strSql = `select  a.H_CompanyCode ,a.H_DivisionCode ,a.H_RequestNumber ,a.H_CustomerCode ,a.H_UserRequest , b.OKCUNM
     ,s.Sales_UserName , s.Sales_LineID as idApr2 , a.H_Approval1 
@@ -19,7 +19,7 @@ module.exports.notiForRequest = async (req, res, next) => {
     let result = await executeSQL(strSql);
     let cusCode = result[0].H_CustomerCode;
     let cusName = result[0].OKCUNM;
-    let reqNo = `UCR-${result[0].H_RequestNumber}`;
+    let reqNo = result[0].H_RequestNumber;
     let lineIdApr1 = result[0].idApr2;
     // const flexMessage = templateFlexMessage(reqNo, cusCode, cusName, "4");
     // const flexMessage = createFlexMessage(reqNo, cusCode, cusName, "4");
