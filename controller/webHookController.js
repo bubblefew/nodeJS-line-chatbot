@@ -1,8 +1,13 @@
 const { executeSQL } = require("../resource/callMysql");
 const line = require("@line/bot-sdk");
+const path = require("path");
 const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
+const {
+  messagesThankYou,
+  messagesCantApprove,
+} = require("../template/flexMessage");
 
 module.exports.main = async (req, res, next) => {
   try {
@@ -25,42 +30,15 @@ async function handleEvent(event) {
   } else if (event.type === "postback") {
     try {
       let data = event.postback.data.split("&");
-
       if (data[0] === "Approve") {
         const sql = `UPDATE is.requestheader
         SET H_Status='20'
         WHERE H_RequestNumber='${data[1]}';`;
         let result = await executeSQL(sql);
-        console.log(result.changedRows);
         if (result.changedRows > 0) {
-          let messages = [
-            { type: "text", text: "อนุมัติรายการคำขอปลดล็อคเครดิตสำเร็จ !" },
-            {
-              type: "text",
-              text: "ขอบคุณ ก๊าบ ก๊าบ  $$",
-              emojis: [
-                {
-                  index: 18,
-                  productId: "5ac21184040ab15980c9b43a",
-                  emojiId: "045",
-                },
-                {
-                  index: 19,
-                  productId: "5ac21184040ab15980c9b43a",
-                  emojiId: "045",
-                },
-              ],
-            },
-            { type: "sticker", packageId: "789", stickerId: "10857" },
-          ];
-          return client.replyMessage(event.replyToken, messages);
+          return client.replyMessage(event.replyToken, messagesThankYou);
         } else {
-          let messages = [
-            { type: "text", text: "ไม่สามารถทำการอัพเดทสถานะได้ก๊าบ" },
-            { type: "text", text: "สาเหตุ ถูกอนุมัติเเล้ว ปลดล็อคแล้ว" },
-            { type: "sticker", packageId: "6136", stickerId: "10551380" },
-          ];
-          return client.replyMessage(event.replyToken, messages);
+          return client.replyMessage(event.replyToken, messagesCantApprove);
         }
       } else if (data[0] === "Reject") {
         console.log("Rejected");
