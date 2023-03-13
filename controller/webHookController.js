@@ -32,7 +32,7 @@ async function handleEvent(event) {
       let data = event.postback.data.split("&");
       if (data[0] === "Approve") {
         const sql = `UPDATE is.requestheader
-        SET H_Status='20'
+        SET H_Status=${data[2]}
         WHERE H_RequestNumber='${data[1]}';`;
         let result = await executeSQL(sql);
         if (result.changedRows > 0) {
