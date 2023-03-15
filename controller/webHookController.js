@@ -4,10 +4,12 @@ const path = require("path");
 const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
+var axios = require('axios');
 const {
   messagesThankYou,
   messagesCantApprove,
 } = require("../template/flexMessage");
+const { log } = require("console");
 
 module.exports.main = async (req, res, next) => {
   try {
@@ -24,6 +26,8 @@ module.exports.main = async (req, res, next) => {
   }
 };
 
+
+
 async function handleEvent(event) {
   if (event.type === "message" && event.message.type === "text") {
     handleMessageEvent(event);
@@ -34,8 +38,10 @@ async function handleEvent(event) {
         const sql = `UPDATE is.requestheader
         SET H_Status=${data[2]}
         WHERE H_RequestNumber='${data[1]}';`;
+        console.log(sql);
         let result = await executeSQL(sql);
         if (result.changedRows > 0) {
+          data[2] === "30" ? true : false;
           return client.replyMessage(event.replyToken, messagesThankYou);
         } else {
           return client.replyMessage(event.replyToken, messagesCantApprove);

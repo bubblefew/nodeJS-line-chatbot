@@ -8,15 +8,25 @@ module.exports.notiForRequest = async (req, res, next) => {
   try {
     console.log("NotiForRequest");
     const { cono, divi, reqno } = req.body;
+    // let strSql = `select  a.H_CompanyCode ,a.H_DivisionCode ,a.H_RequestNumber ,a.H_CustomerCode ,a.H_UserRequest , b.OKCUNM
+    // ,s.Sales_UserName , s.Sales_LineID as idApr2 , a.H_Approval1 ,cast(a.H_Status as  DECIMAL) + 10 as Up_Status
+    // from is.requestheader a
+    // left join m3fdbprd.ocusma b on b.OKCONO = a.H_CompanyCode and  a.H_CustomerCode = b.OKCUNO
+    // left join is.salesman s on s.Sales_CompanyCode  = a.H_CompanyCode and a.H_Approval1  = s.Sales_UserName
+    // where a.H_CompanyCode = '${cono}'
+    // and a.H_DivisionCode = '${divi}'
+    // and a.H_RequestNumber = '${reqno}'`;
     let strSql = `select  a.H_CompanyCode ,a.H_DivisionCode ,a.H_RequestNumber ,a.H_CustomerCode ,a.H_UserRequest , b.OKCUNM
     ,s.Sales_UserName , s.Sales_LineID as idApr2 , a.H_Approval1 ,cast(a.H_Status as  DECIMAL) + 10 as Up_Status
     from is.requestheader a
     left join m3fdbprd.ocusma b on b.OKCONO = a.H_CompanyCode and  a.H_CustomerCode = b.OKCUNO
-    left join is.salesman s on s.Sales_CompanyCode  = a.H_CompanyCode and a.H_Approval1  = s.Sales_UserName 
+    left join is.salesman s on s.Sales_CompanyCode  = a.H_CompanyCode 
+    and case when a.H_Status = '20' then a.H_Approval1 when a.H_Status = '30' then a.H_Approval2 else '-' end = s.Sales_UserName 
     where a.H_CompanyCode = '${cono}'
     and a.H_DivisionCode = '${divi}'
-    and a.H_RequestNumber = '${reqno}'`;
+    and a.H_RequestNumber = '${reqno}'`; 
     let result = await executeSQL(strSql);
+    console.log(result);
     client
       .pushMessage(
         result[0].idApr2,
