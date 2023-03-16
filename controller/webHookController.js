@@ -4,7 +4,7 @@ const path = require("path");
 const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
-var axios = require('axios');
+var axios = require("axios");
 const {
   messagesThankYou,
   messagesCantApprove,
@@ -26,9 +26,34 @@ module.exports.main = async (req, res, next) => {
   }
 };
 
-
-
 async function handleEvent(event) {
+  let user = await executeSQL(
+    `select count(*) as count from is.salesman where Sales_LineID = '${event.source.userId}'`
+  );
+  if (user[0].count === 1) {
+    console.log(event.replyToken);
+    return client.replyMessage(event.replyToken,{
+      "type": "template",
+      "altText": "this is a confirm template",
+      "template": {
+        "type": "confirm",
+        "actions": [
+          {
+            "type": "uri",
+            "label": "Yes",
+            "uri": "https://www.google.com/"
+          },
+          {
+            "type": "postback",
+            "label": "No",
+            "text": "No",
+            "data": "No"
+          }
+        ],
+        "text": "คุณยังไม่ได้สมัครสมาชิก คุณต้องการสมัครสมาชิกใช่หรือไม่ ? "
+      }
+    });
+  }
   if (event.type === "message" && event.message.type === "text") {
     handleMessageEvent(event);
   } else if (event.type === "postback") {
