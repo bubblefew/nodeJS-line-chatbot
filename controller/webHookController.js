@@ -9,7 +9,6 @@ const {
   messagesThankYou,
   messagesCantApprove,
 } = require("../template/flexMessage");
-const { log } = require("console");
 
 module.exports.main = async (req, res, next) => {
   try {
@@ -30,28 +29,42 @@ async function handleEvent(event) {
   let user = await executeSQL(
     `select count(*) as count from is.salesman where Sales_LineID = '${event.source.userId}'`
   );
-  if (user[0].count === 1) {
-    console.log(event.replyToken);
-    return client.replyMessage(event.replyToken,{
-      "type": "template",
-      "altText": "this is a confirm template",
-      "template": {
-        "type": "confirm",
-        "actions": [
+  // console.log(event);
+
+  if (user[0].count === 0) {
+    if (event.type === "postback" && event.postback.data === "NoRegis") {
+      return client.replyMessage(event.replyToken, [
+        {
+          type: "text",
+          text: "หากไม่ได้เป็นสมาชิกจะไม่สามารถทำการร้องขอปลดล็อคเครดิต\nหรือรับการแจ้งเตือนจากน้องเป็ดได้นะ ก๊าบๆๆๆๆ",
+        },
+        {
+          type: "sticker",
+          packageId: "11537",
+          stickerId: "52002771",
+        },
+      ]);
+    }
+    return client.replyMessage(event.replyToken, {
+      type: "template",
+      altText: "this is a confirm template",
+      template: {
+        type: "confirm",
+        actions: [
           {
-            "type": "uri",
-            "label": "Yes",
-            "uri": "https://www.google.com/"
+            type: "uri",
+            label: "Yes",
+            // uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
+            uri: `http://localhost:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
           },
           {
-            "type": "postback",
-            "label": "No",
-            "text": "No",
-            "data": "No"
-          }
+            type: "postback",
+            label: "No",
+            data: "NoRegis",
+          },
         ],
-        "text": "คุณยังไม่ได้สมัครสมาชิก คุณต้องการสมัครสมาชิกใช่หรือไม่ ? "
-      }
+        text: "คุณยังไม่ได้สมัครสมาชิก คุณต้องการสมัครสมาชิกใช่หรือไม่ ? ",
+      },
     });
   }
   if (event.type === "message" && event.message.type === "text") {

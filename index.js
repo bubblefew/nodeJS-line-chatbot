@@ -6,6 +6,8 @@ const helmet = require("helmet");
 /// routers///
 var pushMessageRouter = require("./routes/pushMessage");
 var webHookRouter = require("./routes/webhook");
+var dataRouter = require("./routes/data");
+
 //////////////
 
 const app = express();
@@ -17,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use("/api/v1/chatbot", pushMessageRouter);
 app.use("/webhook", webHookRouter);
+app.use('/api/v1/data', dataRouter)
 
 
 app.listen(3000, () => {
