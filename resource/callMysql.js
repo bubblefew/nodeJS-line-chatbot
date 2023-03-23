@@ -1,7 +1,6 @@
 const mysql = require("mysql2");
-const util = require("util");
+// const util = require("util");
 const config = require("../config/configMySQL");
-
 
 module.exports.executeSQL = async (sqlQuery) => {
   return new Promise(async (resolve, reject) => {
@@ -19,7 +18,3 @@ module.exports.executeSQL = async (sqlQuery) => {
     }
   });
 };
-
-
-
-

@@ -1,8 +1,14 @@
 const { executeSQL } = require("../resource/callMysql");
 const line = require("@line/bot-sdk");
+const path = require("path");
 const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
+var axios = require("axios");
+const {
+  messagesThankYou,
+  messagesCantApprove,
+} = require("../template/flexMessage");
 
 module.exports.main = async (req, res, next) => {
   try {
@@ -20,29 +26,64 @@ module.exports.main = async (req, res, next) => {
 };
 
 async function handleEvent(event) {
+  let user = await executeSQL(
+    `select count(*) as count from is.salesman where Sales_LineID = '${event.source.userId}'`
+  );
+  // console.log(event);
+
+  if (user[0].count === 0) {
+    if (event.type === "postback" && event.postback.data === "NoRegis") {
+      return client.replyMessage(event.replyToken, [
+        {
+          type: "text",
+          text: "หากไม่ได้เป็นสมาชิกจะไม่สามารถทำการร้องขอปลดล็อคเครดิต\nหรือรับการแจ้งเตือนจากน้องเป็ดได้นะ ก๊าบๆๆๆๆ",
+        },
+        {
+          type: "sticker",
+          packageId: "11537",
+          stickerId: "52002771",
+        },
+      ]);
+    }
+    return client.replyMessage(event.replyToken, {
+      type: "template",
+      altText: "this is a confirm template",
+      template: {
+        type: "confirm",
+        actions: [
+          {
+            type: "uri",
+            label: "Yes",
+            // uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
+            uri: `http://localhost:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
+          },
+          {
+            type: "postback",
+            label: "No",
+            data: "NoRegis",
+          },
+        ],
+        text: "คุณยังไม่ได้สมัครสมาชิก คุณต้องการสมัครสมาชิกใช่หรือไม่ ? ",
+      },
+    });
+  }
   if (event.type === "message" && event.message.type === "text") {
     handleMessageEvent(event);
   } else if (event.type === "postback") {
     try {
       let data = event.postback.data.split("&");
-      const messages = [
-        {
-          type: "text",
-          text: "Approve Complete",
-        },
-        {
-          type: "sticker",
-          packageId: "789",
-          stickerId: "10884",
-        },
-      ];
       if (data[0] === "Approve") {
         const sql = `UPDATE is.requestheader
-        SET H_Status='20'
+        SET H_Status=${data[2]}
         WHERE H_RequestNumber='${data[1]}';`;
+        console.log(sql);
         let result = await executeSQL(sql);
-        console.log(result);
-        return client.replyMessage(event.replyToken, messages);
+        if (result.changedRows > 0) {
+          data[2] === "30" ? true : false;
+          return client.replyMessage(event.replyToken, messagesThankYou);
+        } else {
+          return client.replyMessage(event.replyToken, messagesCantApprove);
+        }
       } else if (data[0] === "Reject") {
         console.log("Rejected");
         return client.replyMessage(event.replyToken, {

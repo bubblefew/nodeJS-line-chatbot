@@ -1,1 +1,4 @@
 node_modules
+ERD.*
+index copy.js
+.env
