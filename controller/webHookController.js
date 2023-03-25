@@ -5,17 +5,25 @@ const https = require("https");
 const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
-var axios = require("axios");
+const dialogflow = require("dialogflow");
+
 const {
   messagesThankYou,
   messagesCantApprove,
 } = require("../template/flexMessage");
 
+
+
+
+
+var tmpReq = null;
 module.exports.main = async (req, res, next) => {
+  console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+  tmpReq = req;
+  console.log("AAAAAAAAAAAAAAAAAAaa");
   try {
     Promise.all(req.body.events.map(handleEvent))
       .then(async (result) => {
-        console.log("FEW" + result);
         res.json({ data: "ok", status: 200 });
       })
       .catch((err) => {
@@ -106,31 +114,67 @@ async function handleEvent(event) {
   }
 }
 
-function handleMessageEvent(event) {
-  const message = event.message;
-  const text = message.text;
-  const senderId = event.source.userId;
-  console.log(senderId);
-  if (text === "hello") {
+async function handleMessageEvent(event) {
+  const message = event.message.text;
+  const userId = event.source.userId;
+  console.log(userId);
+  if (message === "hello") {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "Hello, world",
     });
   } else {
-    console.log(event);
-    return "pass";
+    console.log("F");
+    let rsl = await postToDialogflow();
+    // console.log(JSON.stringify(rsl));
     // return client.replyMessage(event.replyToken, {
     //   type: "text",
-    //   text: "I do not understand what you are saying.",
+    //   text: "few, world",
     // });
+    //   const request = {
+    //     session: sessionPath,
+    //     queryInput: {
+    //       text: {
+    //         text: message,
+    //         languageCode: "en-US",
+    //       },
+    //     },
+    //   };
+    //   const responses = await sessionClient.detectIntent(request);
+    //   // Get the detected intent and any parameters
+    //   const intent = responses[0].queryResult.intent.displayName;
+    //   const parameters = responses[0].queryResult.parameters;
+    //   // Create event based on intent and parameters
+    //   let event = {
+    //     name: intent,
+    //     data: parameters,
+    //   };
+    //   const dialogflowRequest = {
+    //     session: sessionPath,
+    //     queryInput: {
+    //       event: {
+    //         name: intent,
+    //         parameters: dialogflow.structProtoToJson(parameters),
+    //         languageCode: "en-US",
+    //       },
+    //     },
+    //   };
+    //   const dialogflowResponse = await sessionClient.detectIntent(
+    //     dialogflowRequest
+    //   );
+    //   const fulfillmentText = dialogflowResponse[0].queryResult.fulfillmentText;
+    //   await lineClient.replyMessage(event.replyToken, {
+    //     type: "text",
+    //     text: fulfillmentText,
+    //   });
   }
 }
-
-const postToDialogflow = (req) => {
-  req.headers.host = "bots.dialogflow.com";
-  return request.post({
-    uri: "https://dialogflow.cloud.google.com/v1/integrations/line/webhook/63ff2386-14ac-4b83-b733-6426eb924ca4",
-    headers: req.headers,
-    body: JSON.stringify(req.body),
+const postToDialogflow = async () => {
+  tmpReq.headers.host = "bots.dialogflow.com";
+  // req.headers.host = "dialogflow.cloud.google.com";
+  return await request.post({
+    uri: "https://bots.dialogflow.com/line/e9bef44f-9a74-4ddc-a4fb-3937232ea015/webhook",
+    headers: tmpReq.headers,
+    body: JSON.stringify(tmpReq.body),
   });
 };
