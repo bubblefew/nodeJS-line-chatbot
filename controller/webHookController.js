@@ -1,6 +1,7 @@
 const { executeSQL } = require("../resource/callMysql");
 const line = require("@line/bot-sdk");
 const path = require("path");
+const https = require("https");
 const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
@@ -13,8 +14,9 @@ const {
 module.exports.main = async (req, res, next) => {
   try {
     Promise.all(req.body.events.map(handleEvent))
-      .then((result) => {
-        res.json(result).status(200).end();
+      .then(async (result) => {
+        console.log("FEW" + result);
+        res.json({ data: "ok", status: 200 });
       })
       .catch((err) => {
         console.error(err);
@@ -29,7 +31,7 @@ async function handleEvent(event) {
   let user = await executeSQL(
     `select count(*) as count from is.salesman where Sales_LineID = '${event.source.userId}'`
   );
-  // console.log(event);
+  console.log(event);
 
   if (user[0].count === 0) {
     if (event.type === "postback" && event.postback.data === "NoRegis") {
@@ -108,7 +110,6 @@ function handleMessageEvent(event) {
   const message = event.message;
   const text = message.text;
   const senderId = event.source.userId;
-  const type = event.type;
   console.log(senderId);
   if (text === "hello") {
     return client.replyMessage(event.replyToken, {
@@ -116,10 +117,12 @@ function handleMessageEvent(event) {
       text: "Hello, world",
     });
   } else {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "I do not understand what you are saying.",
-    });
+    console.log(event);
+    return "pass";
+    // return client.replyMessage(event.replyToken, {
+    //   type: "text",
+    //   text: "I do not understand what you are saying.",
+    // });
   }
 }
 
