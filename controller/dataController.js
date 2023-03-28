@@ -2,6 +2,7 @@ const { executeSQL } = require("../resource/callMysql");
 const config = require("../config/configClient");
 const axios = require("axios");
 const qs = require("qs");
+
 module.exports.regiterMember = async (req, res, next) => {
   // /api/v1/data/regitermember
   try {
