@@ -120,7 +120,6 @@ module.exports.tracking = async (req, res, next) => {
     var bubbles = [];
     for (var i = 0; i < results.length; i++) {
       // Create a Bubble container
-      const randomColor = Math.floor(Math.random() * 16777215).toString(16);
       var bubble = {
         type: "bubble",
         // hero: {
@@ -179,7 +178,8 @@ module.exports.tracking = async (req, res, next) => {
                     {
                       type: "text",
                       text: results[i].H_CustomerCode,
-                      size: "sm",
+                      size: "md",
+                      weight: "bold",
                       color: "#111111",
                       wrap: false,
                       flex: 55,
@@ -205,6 +205,7 @@ module.exports.tracking = async (req, res, next) => {
                       type: "text",
                       text: results[i].OKCUNM,
                       size: "sm",
+                      weight: "bold",
                       color: "#111111",
                       wrap: false,
                       flex: 55,
@@ -262,10 +263,10 @@ module.exports.tracking = async (req, res, next) => {
     };
     var flexMessage = {
       type: "flex",
-      altText: "Dynamic Carousel template",
+      altText: "รายการติดตามสถานะ",
       contents: carousel,
     };
-    flexMessage;
+
     client.pushMessage(lineID, flexMessage);
 
     res.json({ Status: 200, data: "OK" }).status(200).end();
