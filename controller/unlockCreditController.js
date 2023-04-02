@@ -3,8 +3,7 @@ const { exec } = require("child_process");
 
 module.exports.unlockCreditLimit = async (req, res, next) => {
   try {
-    const jarPath =
-      "D:/java_project/JavaApplication2/dist/JavaApplication2.jar";
+    const jarPath = "D:/is/OIS2120_AUTO/dist/OIS2120_AUTO.jar";
 
     exec(`java -jar ${jarPath}`, (error, stdout, stderr) => {
       if (error) {

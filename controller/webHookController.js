@@ -6,7 +6,7 @@ const config = require("../config/configClient");
 const client = new line.Client(config);
 const request = require("request-promise");
 const dialogflow = require("dialogflow");
-
+const axios = require("axios");
 const {
   messagesThankYou,
   messagesCantApprove,
@@ -108,15 +108,67 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 }
-
+//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
 async function handleMessageEvent(event) {
+  console.log(event);
   const message = event.message.text;
+  const API_KEY = "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";
   const userId = event.source.userId;
-  try {
-    await postToDialogflow();
-  } catch (error) {
-    console.log(error);
-  }
+  if (event.message.text === "ติดตามสถานะ") {
+    console.log("ติดตามสถานะ");
+
+    const chatURL = "https://api.openai.com/v1/completions";
+    const payload = {
+      model: "text-davinci-003",
+      prompt: message,
+      temperature: 0.4,
+      max_tokens: 1000,
+    };
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+    };
+    let gptText = "";
+    await axios
+      .post(chatURL, payload, options)
+      .then((response) => (gptText = response.data.choices[0].text.trim()))
+      .catch((error) => console.log(error));
+    console.log(gptText);
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: gptText,
+    });
+  } else
+    try {
+      const chatURL = "https://api.openai.com/v1/completions";
+      const payload = {
+        model: "text-davinci-003",
+        prompt: message,
+        temperature: 0.4,
+        max_tokens: 1000,
+      };
+      const options = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      };
+      let gptText = "";
+      await axios
+        .post(chatURL, payload, options)
+        .then((response) => (gptText = response.data.choices[0].text.trim()))
+        .catch((error) => console.log(error));
+      console.log(gptText);
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: gptText,
+      });
+      // await postToDialogflow();
+    } catch (error) {
+      console.log(error);
+    }
 }
 const postToDialogflow = async () => {
   tmpReq.headers.host = "bots.dialogflow.com";

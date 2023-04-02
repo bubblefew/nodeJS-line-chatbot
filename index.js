@@ -9,6 +9,7 @@ var webHookRouter = require("./routes/webhook");
 var dataRouter = require("./routes/data");
 var UnlockCreditRouter = require("./routes/unlockCredit");
 var DialogflowRouter = require("./routes/dialogflow");
+var chatGPTRouter = require("./routes/chatgpt");
 
 //////////////
 
@@ -24,6 +25,7 @@ app.use("/webhook", webHookRouter);
 app.use("/api/v1/data", dataRouter);
 app.use("/api/v1/unlock", UnlockCreditRouter);
 app.use("/dialogflow", DialogflowRouter);
+app.use("/api/v1/callchatgpt", chatGPTRouter);
 
 app.listen(3000, () => {
   console.log("Server start on port : 3000");
