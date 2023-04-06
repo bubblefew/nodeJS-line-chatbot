@@ -86,6 +86,39 @@ module.exports.successfuly = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.cancel = async (req, res, next) => {
+  try {
+    console.log("cancel");
+    const { lineID, reqno } = req.body;
+    client
+      .pushMessage(lineID, [
+        {
+          type: "text",
+          text: `หมายเลขคำขอปลดล็อคเครดิตเลขที่ ${reqno} ได้ทำการอนุมัติเรียบร้อยเเล้วก๊าบๆ`,
+        },
+        {
+          type: "sticker",
+          packageId: "789",
+          stickerId: "10873",
+        },
+      ])
+      .then((res2) => {
+        res.status(200).json({
+          status_code: 200,
+          data: res2,
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          status_code: 400,
+          data: "error function notiForRequest",
+        });
+      });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports.notiForRegister = async (req, res, next) => {
   try {
     console.log("notiForRegister");
@@ -265,6 +298,17 @@ module.exports.tracking = async (req, res, next) => {
                   style: "primary",
                   height: "sm",
                   color: "#61C0BF",
+                },
+                {
+                  type: "button",
+                  action: {
+                    type: "postback",
+                    label: "Cancel Request",
+                    data: `Cancel&${results[i].H_RequestNumber}&99`,
+                  },
+                  style: "primary",
+                  height: "sm",
+                  color: "#D64424",
                 },
                 {
                   type: "button",

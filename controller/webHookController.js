@@ -158,6 +158,24 @@ async function handleEvent(event) {
         } else {
           return client.replyMessage(event.replyToken, messagesCantApprove);
         }
+      } else if (data[0] === "Cancel") {
+        console.log("Cancel");
+        const sql = `UPDATE is.requestheader
+        SET H_Status= '99'
+        where H_CompanyCode = '10'
+        and H_DivisionCode = '101'
+        and H_RequestNumber  = '${data[1]}'  
+        and cast(H_Status as DECIMAL) <> 50 `;
+        let result = await executeSQL(sql);
+        console.log(result);
+        if (result.changedRows > 0) {
+          return client.replyMessage(event.replyToken, {
+            type: "text",
+            text: `ยกเลิกสำเร็จเลขที่คำขอ : ${data[1]}`,
+          });
+        } else {
+          return client.replyMessage(event.replyToken, messagesCantApprove);
+        }
       }
     } catch (error) {
       return client.replyMessage(event.replyToken, {
