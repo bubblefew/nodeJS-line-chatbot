@@ -199,9 +199,13 @@ async function handleMessageEvent(event) {
       type: "text",
       text: gptText,
     });
+<<<<<<< HEAD
   } else {
     await postToDialogflow();
   }
+=======
+  } else await postToDialogflow();
+>>>>>>> 1e7b7721ec1d8638fd0a2f5578e82e33937f4781
 }
 const postToDialogflow = async () => {
   tmpReq.headers.host = "bots.dialogflow.com";
