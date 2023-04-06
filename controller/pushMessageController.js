@@ -271,7 +271,10 @@ module.exports.tracking = async (req, res, next) => {
                   action: {
                     type: "uri",
                     label: "View details",
-                    uri: "https://liff.line.me/123456-abcedfg/share", // Specify the LINE MINI App page.
+                    // uri: "http://119.59.114.233:8080/CR_Control/login.jsp", // Specify the LINE MINI App page.
+                    uri:
+                      "http://localhost:8080/CR_Control/P2.jsp?reqno=" +
+                      results[i].H_RequestNumber, // Specify the LINE MINI App page.
                   },
                   style: "primary",
                   height: "sm",

@@ -99,14 +99,17 @@ async function handleEvent(event) {
               },
               data: queryString,
             };
-            axios
-              .request(config)
-              .then((response) => {
-                console.log(JSON.stringify(response.data));
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            setTimeout(
+              axios
+                .request(config)
+                .then((response) => {
+                  console.log(JSON.stringify(response.data));
+                })
+                .catch((error) => {
+                  console.log(error);
+                }),
+              5000
+            );
           }
           if (data[2] === "40") {
             let queryString = qs.stringify({
@@ -175,37 +178,30 @@ async function handleMessageEvent(event) {
   const userId = event.source.userId;
   if (event.message.text === "ติดตามสถานะ") {
     console.log("ติดตามสถานะ");
-
-    const chatURL = "https://api.openai.com/v1/completions";
-    const payload = {
-      model: "text-davinci-003",
-      prompt: "write code for loop using python",
-      temperature: 0.4,
-      max_tokens: 1000,
-    };
-    const options = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-      },
-    };
-    let gptText = "";
-    await axios
-      .post(chatURL, payload, options)
-      .then((response) => (gptText = response.data.choices[0].text.trim()))
-      .catch((error) => console.log(error));
-    console.log(gptText);
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: gptText,
+    let data = qs.stringify({
+      lineID: userId,
     });
-<<<<<<< HEAD
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://localhost:3000/api/v1/chatbot/tracking",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   } else {
     await postToDialogflow();
   }
-=======
-  } else await postToDialogflow();
->>>>>>> 1e7b7721ec1d8638fd0a2f5578e82e33937f4781
 }
 const postToDialogflow = async () => {
   tmpReq.headers.host = "bots.dialogflow.com";
@@ -215,3 +211,23 @@ const postToDialogflow = async () => {
     body: JSON.stringify(tmpReq.body),
   });
 };
+
+// const chatURL = "https://api.openai.com/v1/completions";
+//     const payload = {
+//       model: "text-davinci-003",
+//       prompt: "write code for loop using python",
+//       temperature: 0.4,
+//       max_tokens: 1000,
+//     };
+//     const options = {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${API_KEY}`,
+//       },
+//     };
+//     let gptText = "";
+//     await axios
+//       .post(chatURL, payload, options)
+//       .then((response) => (gptText = response.data.choices[0].text.trim()))
+//       .catch((error) => console.log(error));
+//     console.log(gptText);
