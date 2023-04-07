@@ -11,10 +11,6 @@ module.exports.dialogflow = async (req, res, next) => {
   let obj = "";
   try {
     let Intent = req.body.queryResult.intent.displayName;
-    // console.log(req.body.queryResult.queryText);
-    console.log(Intent);
-    console.log(req.body.queryResult.parameters);
-
     switch (Intent) {
       case "canceling":
         {
@@ -28,7 +24,7 @@ module.exports.dialogflow = async (req, res, next) => {
                 payload: {
                   line: {
                     type: "text",
-                    text: `บาทค่ะ สนใจสั่งซื้อผ่านระบบ LINEMAN / ROBIN HOOD / SHOPPEE FOOD ได้เลยนะคะ`,
+                    text: `ระบบทำการยกเลิกหมายเลขคำขอเลขที่ ${requestNumber} เรียบร้อยแล้ว ก๊าบๆ`,
                   },
                 },
               },
