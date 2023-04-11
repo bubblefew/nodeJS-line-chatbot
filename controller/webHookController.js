@@ -36,7 +36,6 @@ async function handleEvent(event) {
     `select count(*) as count from is.salesman where Sales_LineID = '${event.source.userId}'`
   );
 
-  console.log(event);
   if (user[0].count === 0) {
     if (event.type === "postback" && event.postback.data === "NoRegis") {
       return client.replyMessage(event.replyToken, [
@@ -53,7 +52,7 @@ async function handleEvent(event) {
     }
     return client.replyMessage(event.replyToken, {
       type: "template",
-      altText: "this is a confirm template",
+      altText: "สมัครสมาชิก",
       template: {
         type: "confirm",
         actions: [
@@ -224,12 +223,12 @@ async function handleMessageEvent(event) {
 const postToDialogflow = async () => {
   tmpReq.headers.host = "bots.dialogflow.com";
   return await request.post({
-    uri: "https://bots.dialogflow.com/line/e9bef44f-9a74-4ddc-a4fb-3937232ea015/webhook",
+    uri: "https://bots.dialogflow.com/line/424fc17d-5d3d-458b-87cf-8e04d72908e3/webhook",
     headers: tmpReq.headers,
     body: JSON.stringify(tmpReq.body),
   });
 };
-
+// https://dialogflow.cloud.google.com/v1/integrations/line/webhook/424fc17d-5d3d-458b-87cf-8e04d72908e3
 // const chatURL = "https://api.openai.com/v1/completions";
 //     const payload = {
 //       model: "text-davinci-003",

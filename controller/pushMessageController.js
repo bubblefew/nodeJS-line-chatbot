@@ -345,9 +345,7 @@ module.exports.tracking = async (req, res, next) => {
       altText: "รายการติดตามสถานะ",
       contents: carousel,
     };
-
     client.pushMessage(lineID, flexMessage);
-
     res.json({ Status: 200, data: "OK" }).status(200).end();
   } catch (error) {
     next(error);
