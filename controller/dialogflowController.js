@@ -7,8 +7,37 @@ module.exports.dialogflow = async (req, res, next) => {
   let obj = "";
   try {
     let Intent = req.body.queryResult.intent.displayName;
-    console.log(Intent);
+    console.log(req.body.queryResult.parameters["requestnumber"]);
     switch (Intent) {
+      case "HowTo":
+        {
+          let lineID =
+            req.body.originalDetectIntentRequest.payload.data.source.userId;
+          let data = qs.stringify({
+            lineID: lineID,
+          });
+
+          let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: "http://localhost:3000/api/v1/chatbot/tracking",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            data: data,
+          };
+          // console.log(config);
+
+          axios
+            .request(config)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        break;
       case "Cancel":
         {
           let requestNumber = req.body.queryResult.parameters["requestnumber"];
@@ -34,7 +63,7 @@ module.exports.dialogflow = async (req, res, next) => {
         break;
       case "Tracking":
         {
-          const lineID =
+          let lineID =
             req.body.originalDetectIntentRequest.payload.data.source.userId;
           let data = qs.stringify({
             lineID: lineID,
