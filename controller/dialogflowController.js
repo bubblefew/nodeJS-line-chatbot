@@ -7,6 +7,7 @@ module.exports.dialogflow = async (req, res, next) => {
   let obj = "";
   try {
     let Intent = req.body.queryResult.intent.displayName;
+    console.log(Intent);
     switch (Intent) {
       case "Cancel":
         {
