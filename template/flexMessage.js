@@ -35,7 +35,7 @@ module.exports.flexMessageRequestNotifacation = (
         {
           type: "uri",
           label: "More detail",
-          uri: `https://siriphonnot.medium.com/%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87-webhook-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-node-js-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-dialogflow-fulfillment-a1a0f61fc52b`,
+          uri: `http://119.59.114.233:8080/CR_Control/P2.jsp?reqno=${reqNo}`,
         },
       ],
       imageAspectRatio: "rectangle",

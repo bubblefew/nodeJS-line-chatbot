@@ -82,6 +82,8 @@ async function handleEvent(event) {
         SET H_Status=${data[2]}
         WHERE H_RequestNumber='${data[1]}';`;
         let result = await executeSQL(sql);
+        console.log(result.changedRows);
+
         if (result.changedRows > 0) {
           if (data[2] === "30") {
             let queryString = qs.stringify({
@@ -98,17 +100,15 @@ async function handleEvent(event) {
               },
               data: queryString,
             };
-            setTimeout(
-              axios
-                .request(config)
-                .then((response) => {
-                  console.log(JSON.stringify(response.data));
-                })
-                .catch((error) => {
-                  console.log(error);
-                }),
-              5000
-            );
+            axios
+              .request(config)
+              .then((response) => {
+                console.log("FFFFFFFFFFFFFFFFFFF");
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            return client.replyMessage(event.replyToken, messagesThankYou);
           }
           if (data[2] === "40") {
             let queryString = qs.stringify({
@@ -134,8 +134,8 @@ async function handleEvent(event) {
               .catch((error) => {
                 console.log(error);
               });
+            return client.replyMessage(event.replyToken, messagesThankYou);
           }
-          return client.replyMessage(event.replyToken, messagesThankYou);
         } else {
           return client.replyMessage(event.replyToken, messagesCantApprove);
         }

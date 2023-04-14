@@ -419,8 +419,8 @@ module.exports.pendingitems = async (req, res, next) => {
     and r.H_UserRequest = s.Sales_UserName 
     left join m3fdbprd.ocusma o on r.H_CompanyCode = o.OKCONO 
     and r.H_CustomerCode  = o.OKCUNO 
-    where r.H_Status not in ('10')
-    and s.Sales_LineID = '${lineID}'
+    where r.H_Status  in ('30','40')
+    and (r.H_Approval1  =  (select Sales_UserName from is.salesman where Sales_LineID = '${lineID}')  or  r.H_Approval2  = (select Sales_UserName from is.salesman where Sales_LineID = '${lineID}') )
     order by r.H_RequestNumber asc limit 10`;
     let results = await executeSQL(sql);
     console.log(results.length);

@@ -9,6 +9,26 @@ module.exports.dialogflow = async (req, res, next) => {
     let Intent = req.body.queryResult.intent.displayName;
     console.log(Intent);
     switch (Intent) {
+      case "Hello":
+        {
+          obj = {
+            fulfillmentMessages: [
+              {
+                text: {
+                  text: [
+                    "สวัสดีครับ นายท่าน มีอะไรให้น้องเป็ดช่วยเหลือไหม ก้าบ ก้าบ",
+                  ],
+                },
+              },
+              {
+                text: {
+                  text: ["หากต้องการใช้งานน้องบอท สามารถเรียกได้เลยน้า"],
+                },
+              },
+            ],
+          };
+        }
+        break;
       case "Register":
         {
           let data = qs.stringify({
