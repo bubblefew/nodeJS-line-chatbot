@@ -7,26 +7,66 @@ module.exports.dialogflow = async (req, res, next) => {
   let obj = "";
   try {
     let Intent = req.body.queryResult.intent.displayName;
-    console.log(req.body.queryResult.parameters["requestnumber"]);
+    console.log(Intent);
     switch (Intent) {
-      case "HowTo":
+      case "Register":
         {
-          let lineID =
-            req.body.originalDetectIntentRequest.payload.data.source.userId;
           let data = qs.stringify({
-            lineID: lineID,
+            lineID:
+              req.body.originalDetectIntentRequest.payload.data.source.userId,
           });
 
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: "http://localhost:3000/api/v1/chatbot/tracking",
+            url: "http://localhost:3000/api/v1/chatbot/howtoregis",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
             data: data,
           };
-          // console.log(config);
+
+          axios
+            .request(config)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        break;
+      case "HowTo":
+        {
+          obj = {
+            fulfillmentMessages: [
+              {
+                text: {
+                  text: [
+                    "วิธีการใช้งาน\n1.เข้าสู่ระบบบนเว็ปแอพพลิเคชัน\n2.กรอกแบบฟอร์มคำขอรายการปลดล็อค\n3.รอผู้อนุมัติ\n4.เมื่อรายการปลดล็อคสำเร็จ นายท่านจะได้รับข้อความแจ้งเตือน",
+                  ],
+                },
+              },
+            ],
+          };
+        }
+        break;
+      case "Pending":
+        {
+          let data = qs.stringify({
+            lineID:
+              req.body.originalDetectIntentRequest.payload.data.source.userId,
+          });
+
+          let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: "http://localhost:3000/api/v1/chatbot/pendingitems",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            data: data,
+          };
 
           axios
             .request(config)

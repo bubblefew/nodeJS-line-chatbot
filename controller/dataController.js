@@ -3,7 +3,7 @@ const config = require("../config/configClient");
 const axios = require("axios");
 const qs = require("qs");
 
-module.exports.regiterMember = async (req, res, next) => {
+module.exports.registerMember = async (req, res, next) => {
   // /api/v1/data/regitermember
   try {
     const { username, password, staffcode, firstname, lastname, lineid } =
@@ -14,7 +14,7 @@ module.exports.regiterMember = async (req, res, next) => {
     let rsl = await executeSQL(sql);
     if (rsl) {
       let data = qs.stringify({
-        lineID: "U0d0e9e32d50828492ca9a9426c15f3d0",
+        lineID: lineid,
       });
       let config = {
         method: "post",

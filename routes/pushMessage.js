@@ -8,5 +8,6 @@ router.post("/cancel", controller.cancel);
 router.post("/register", controller.notiForRegister);
 router.post("/tracking", controller.tracking);
 router.post("/pendingitems", controller.pendingitems);
+router.post("/howtoregis", controller.howtoregis);
 
 module.exports = router;

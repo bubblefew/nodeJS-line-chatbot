@@ -119,6 +119,7 @@ module.exports.cancel = async (req, res, next) => {
     next(error);
   }
 };
+
 module.exports.notiForRegister = async (req, res, next) => {
   try {
     console.log("notiForRegister");
@@ -141,6 +142,55 @@ module.exports.notiForRegister = async (req, res, next) => {
         {
           type: "text",
           text: "http://119.59.114.233:8080/CR_Control/login.jsp",
+        },
+      ])
+      .then((res2) => {
+        res.status(200).json({
+          status_code: 200,
+          data: res2,
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          status_code: 400,
+          data: "error function notiForRequest",
+        });
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.howtoregis = async (req, res, next) => {
+  try {
+    console.log("howtoregis");
+    const { lineID } = req.body;
+    client
+      .pushMessage(lineID, [
+        {
+          type: "text",
+          text: "วิธีการใช้งาน\n1.สมัครสมาชิกกับน้องบอทก่อน\n2.เข้าลิงค์ไปสมัครสมาชิก\n3.รอรับการแจ้งเตือนได้เลย",
+        },
+        {
+          type: "template",
+          altText: "สมัครสมาชิก",
+          template: {
+            type: "confirm",
+            actions: [
+              {
+                type: "uri",
+                label: "Yes",
+                // uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
+                uri: `http://localhost:8080/CR_Control/register.jsp?lineID=${lineID}`,
+              },
+              {
+                type: "postback",
+                label: "No",
+                data: "NoRegis",
+              },
+            ],
+            text: "คุณยังไม่ได้สมัครสมาชิก คุณต้องการสมัครสมาชิกใช่หรือไม่ ? ",
+          },
         },
       ])
       .then((res2) => {
@@ -379,18 +429,6 @@ module.exports.pendingitems = async (req, res, next) => {
       // Create a Bubble container
       var bubble = {
         type: "bubble",
-        // hero: {
-        //   type: "image",
-        //   url: "https://cdn.pixabay.com/photo/2017/02/01/09/57/animal-2029283_960_720.png",
-        //   size: "full",
-        //   aspectRatio: "20:13",
-        //   aspectMode: "cover",
-        //   action: {
-        //     type: "uri",
-        //     label: "View details",
-        //     uri: "https://vos.line-scdn.net/bot-designer-template-images/event/brown-card.png",
-        //   },
-        // },
         body: {
           type: "box",
           layout: "vertical",
