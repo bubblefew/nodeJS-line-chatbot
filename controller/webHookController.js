@@ -102,9 +102,7 @@ async function handleEvent(event) {
             };
             axios
               .request(config)
-              .then((response) => {
-                console.log("FFFFFFFFFFFFFFFFFFF");
-              })
+              .then((response) => {})
               .catch((error) => {
                 console.log(error);
               });

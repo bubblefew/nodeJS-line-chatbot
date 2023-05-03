@@ -9,6 +9,36 @@ module.exports.dialogflow = async (req, res, next) => {
     let Intent = req.body.queryResult.intent.displayName;
     console.log(Intent);
     switch (Intent) {
+      case "RequestUnlockCredit":
+        {
+          obj = {
+            fulfillmentMessages: [
+              {
+                payload: {
+                  line: {
+                    type: "template",
+                    altText: "ลิงค์สำหรับทำรายการคำขอปลดล็อคเครดิต",
+                    template: {
+                      type: "buttons",
+                      thumbnailImageUrl:
+                        "https://cdn.pixabay.com/photo/2016/03/21/23/25/link-1271843_960_720.png",
+                      title: "Link",
+                      text: "สามารถกดเพื่อไปยังเว็บไซต์สำหรับการทำรายการปลดเครดิต",
+                      actions: [
+                        {
+                          type: "uri",
+                          label: "Click & Go !",
+                          uri: "http://119.59.114.233:8080/CR_Control/login.jsp",
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            ],
+          };
+        }
+        break;
       case "Hello":
         {
           obj = {
@@ -101,8 +131,17 @@ module.exports.dialogflow = async (req, res, next) => {
       case "Cancel":
         {
           let requestNumber = req.body.queryResult.parameters["requestnumber"];
+          let sql = `select * from is.requestheader where H_RequestNumber = '${requestNumber}' and cast(H_Status as DECIMAL) <> 50 `;
+          let rsl = await executeSQL(sql);
           let msg = "";
-          if ((i = 1)) {
+          if (rsl.length === 1) {
+            const sql = `UPDATE is.requestheader
+            SET H_Status= '99'
+            where H_CompanyCode = '10'
+            and H_DivisionCode = '101'
+            and H_RequestNumber  = '${requestNumber}'  
+            and cast(H_Status as DECIMAL) <> 50 `;
+            await executeSQL(sql);
             msg = `ระบบทำการยกเลิกหมายเลขคำขอเลขที่ ${requestNumber} เรียบร้อยแล้ว ก๊าบๆ`;
           } else {
             msg = `ระบบไม่สามารถทำการยกเลิกหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
@@ -154,10 +193,40 @@ module.exports.dialogflow = async (req, res, next) => {
         {
           let requestNumber = req.body.queryResult.parameters["requestnumber"];
           console.log(requestNumber);
-          let i = 0;
+          let sql = `select * from is.requestheader where H_RequestNumber = '${requestNumber}' and H_Status IN ('20','30')`;
+          let rsl = await executeSQL(sql);
+          console.log(rsl.length);
           let msg = "";
-          if ((i = 1)) {
+          if (rsl.length > 0) {
+            let sqlUpdateStatus = `UPDATE is.requestheader
+            SET H_Status= '${rsl[0].H_Status}' + 10
+            WHERE H_RequestNumber='${requestNumber}' `;
+            await executeSQL(sqlUpdateStatus);
             msg = `ระบบทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} เรียบร้อยแล้ว ก๊าบๆ`;
+            if (rsl[0].H_Status === "20") {
+              let queryString = qs.stringify({
+                cono: "10",
+                divi: "101",
+                reqno: requestNumber,
+              });
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: "http://localhost:3000/api/v1/chatbot/message",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data: queryString,
+              };
+              axios
+                .request(config)
+                .then((response) => {
+                  console.log("FFFFFFFFFFFFFFFFFFF");
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
           } else {
             msg = `ระบบไม่สามารถทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
           }
