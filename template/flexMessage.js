@@ -22,10 +22,15 @@ module.exports.flexMessageRequestNotifacation = (
         uri: "http://example.com/page/123",
       },
       actions: [
+        // {
+        //   type: "postback",
+        //   label: "Approve",
+        //   data: `Approve&${reqNo}&${statusUpdate}`,
+        // },
         {
-          type: "postback",
+          type: "message",
           label: "Approve",
-          data: `Approve&${reqNo}&${statusUpdate}`,
+          text: `Approve Request Number : ${reqNo}`,
         },
         {
           type: "postback",

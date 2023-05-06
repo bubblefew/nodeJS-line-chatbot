@@ -195,7 +195,11 @@ module.exports.dialogflow = async (req, res, next) => {
           console.log(requestNumber);
           let sql = `select * from is.requestheader where H_RequestNumber = '${requestNumber}' and H_Status IN ('20','30')`;
           let rsl = await executeSQL(sql);
-          console.log(rsl.length);
+          let stickerObj = {
+            type: "sticker",
+            packageId: "789",
+            stickerId: "10863",
+          };
           let msg = "";
           if (rsl.length > 0) {
             let sqlUpdateStatus = `UPDATE is.requestheader
@@ -229,6 +233,8 @@ module.exports.dialogflow = async (req, res, next) => {
             }
           } else {
             msg = `ระบบไม่สามารถทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
+            stickerObj.packageId = "789";
+            stickerObj.stickerId = "10870";
           }
           obj = {
             fulfillmentMessages: [
@@ -237,6 +243,77 @@ module.exports.dialogflow = async (req, res, next) => {
                   line: {
                     type: "text",
                     text: msg,
+                  },
+                },
+              },
+            ],
+          };
+        }
+        break;
+      case "ApproveNow":
+        {
+          let requestNumber = req.body.queryResult.parameters["requestnumber"];
+          console.log(requestNumber);
+          let sql = `select * from is.requestheader where H_RequestNumber = '${requestNumber}' and H_Status IN ('20','30')`;
+          let rsl = await executeSQL(sql);
+          let msg = "";
+          let stickerObj = {
+            type: "sticker",
+            packageId: "789",
+            stickerId: "10863",
+          };
+
+          if (rsl.length > 0) {
+            let sqlUpdateStatus = `UPDATE is.requestheader
+            SET H_Status= '${rsl[0].H_Status}' + 10
+            WHERE H_RequestNumber='${requestNumber}' `;
+            await executeSQL(sqlUpdateStatus);
+            msg = `ระบบทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} เรียบร้อยแล้ว ก๊าบๆ`;
+            if (rsl[0].H_Status === "20") {
+              let queryString = qs.stringify({
+                cono: "10",
+                divi: "101",
+                reqno: requestNumber,
+              });
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: "http://localhost:3000/api/v1/chatbot/message",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data: queryString,
+              };
+              axios
+                .request(config)
+                .then((response) => {
+                  console.log("FFFFFFFFFFFFFFFFFFF");
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          } else {
+            msg = `ระบบไม่สามารถทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
+            stickerObj.packageId = "789";
+            stickerObj.stickerId = "10870";
+          }
+          obj = {
+            fulfillmentMessages: [
+              {
+                payload: {
+                  line: {
+                    type: "text",
+                    text: msg,
+                  },
+                },
+              },
+              {
+                payload: {
+                  line: {
+                    type: "sticker",
+                    packageId: stickerObj.packageId,
+                    stickerId: stickerObj.stickerId,
                   },
                 },
               },

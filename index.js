@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
-
+const dotenv = require("dotenv");
+dotenv.config().parsed;
 /// routers///
 var pushMessageRouter = require("./routes/pushMessage");
 var webHookRouter = require("./routes/webhook");
@@ -25,6 +26,6 @@ app.use("/api/v1/data", dataRouter);
 app.use("/api/v1/unlock", UnlockCreditRouter);
 app.use("/dialogflow", DialogflowRouter);
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server start on port : 3000");
 });
