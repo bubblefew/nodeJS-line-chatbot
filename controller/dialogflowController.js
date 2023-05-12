@@ -193,7 +193,10 @@ module.exports.dialogflow = async (req, res, next) => {
         {
           let requestNumber = req.body.queryResult.parameters["requestnumber"];
           console.log(requestNumber);
-          let sql = `select * from is.requestheader where H_RequestNumber = '${requestNumber}' and H_Status IN ('20','30')`;
+          let sql = `select a.*,b.Sales_LineID 
+          from is.requestheader a
+          left join is.salesman b on b.Sales_UserName = a.H_UserRequest and a.H_CompanyCode = b.Sales_CompanyCode 
+          where a.H_RequestNumber = '${requestNumber}' and a.H_Status IN ('20','30')`;
           let rsl = await executeSQL(sql);
           let stickerObj = {
             type: "sticker",
@@ -230,6 +233,30 @@ module.exports.dialogflow = async (req, res, next) => {
                 .catch((error) => {
                   console.log(error);
                 });
+            } else if (rsl[0].H_Status === "30") {
+              let queryString = qs.stringify({
+                cono: "10",
+                divi: "101",
+                reqno: requestNumber,
+                lineId: event.source.userId,
+              });
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: "http://localhost:3000/api/v1/unlock/unlockcreditlimit",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data: queryString,
+              };
+              axios
+                .request(config)
+                .then((response) => {
+                  console.log(JSON.stringify(response.data));
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             }
           } else {
             msg = `ระบบไม่สามารถทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
@@ -243,6 +270,15 @@ module.exports.dialogflow = async (req, res, next) => {
                   line: {
                     type: "text",
                     text: msg,
+                  },
+                },
+              },
+              {
+                payload: {
+                  line: {
+                    type: "sticker",
+                    packageId: stickerObj.packageId,
+                    stickerId: stickerObj.stickerId,
                   },
                 },
               },

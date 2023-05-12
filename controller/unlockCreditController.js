@@ -7,11 +7,11 @@ module.exports.unlockCreditLimit = async (req, res, next) => {
     const jarPath = "D:/is/OIS2120_AUTO/dist/OIS2120_AUTO.jar";
 
     let { reqno, lineId } = req.body;
-    // exec(`java -jar ${jarPath}`, async (error, stdout, stderr) => {
-    // if (error) {
-    //   console.error(`exec error: ${error}`);
-    //   return;
-    // }
+    // exec(`java -jar ${jarPath} "${reqno}"`, async (error, stdout, stderr) => {
+    //   if (error) {
+    //     console.error(`exec error: ${error}`);
+    //     return;
+    //   }
     let sql = `UPDATE is.requestheader
       SET H_Status = '50' 
       WHERE H_RequestNumber='${reqno}' `;
