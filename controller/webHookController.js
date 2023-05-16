@@ -188,8 +188,6 @@ async function handleEvent(event) {
 //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
 async function handleMessageEvent(event) {
   console.log(event);
-  const message = event.message.text;
-  const API_KEY = "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";
   const userId = event.source.userId;
   if (event.message.text === "ติดตามสถานะ") {
     console.log("ติดตามสถานะ");

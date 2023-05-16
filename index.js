@@ -10,10 +10,6 @@ var webHookRouter = require("./routes/webhook");
 var dataRouter = require("./routes/data");
 var UnlockCreditRouter = require("./routes/unlockCredit");
 var DialogflowRouter = require("./routes/dialogflow");
-var chatGPTRouter = require("./routes/chatgpt");
-
-//////////////
-
 const app = express();
 
 app.use(bodyParser.json());
