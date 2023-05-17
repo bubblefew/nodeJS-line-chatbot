@@ -19,7 +19,7 @@ module.exports.registerMember = async (req, res, next) => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: "http://localhost:3000/api/v1/chatbot/register",
+        url: `http://${process.env.HOST}:3000/api/v1/chatbot/register`,
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },

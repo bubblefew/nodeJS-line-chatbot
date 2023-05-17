@@ -69,7 +69,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: "http://localhost:3000/api/v1/chatbot/howtoregis",
+            url: `http://${process.env.HOST}:3000/api/v1/chatbot/howtoregis`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -111,7 +111,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: "http://localhost:3000/api/v1/chatbot/pendingitems",
+            url: `http://${process.env.HOST}:3000/api/v1/chatbot/pendingitems`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -219,7 +219,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: "http://localhost:3000/api/v1/chatbot/tracking",
+            url: `http://${process.env.HOST}:3000/api/v1/chatbot/tracking`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -267,7 +267,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: "http://localhost:3000/api/v1/chatbot/message",
+                url: `http://${process.env.HOST}:3000/api/v1/chatbot/message`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -291,7 +291,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: "http://localhost:3000/api/v1/unlock/unlockcreditlimit",
+                url: `http://${process.env.HOST}:3000/api/v1/unlock/unlockcreditlimit`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -362,7 +362,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: "http://localhost:3000/api/v1/chatbot/message",
+                url: `http://${process.env.HOST}:3000/api/v1/chatbot/message`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -438,7 +438,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: "http://localhost:3000/api/v1/chatbot/notireject",
+                url: `http://${process.env.HOST}:3000/api/v1/chatbot/notireject`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },

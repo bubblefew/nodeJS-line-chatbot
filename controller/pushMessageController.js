@@ -370,7 +370,7 @@ module.exports.tracking = async (req, res, next) => {
                     label: "View details",
                     // uri: "http://119.59.114.233:8080/CR_Control/login.jsp", // Specify the LINE MINI App page.
                     uri:
-                      "http://localhost:8080/CR_Control/P2.jsp?reqno=" +
+                      `http://${process.env.HOST}:8080/CR_Control/P2.jsp?reqno=` +
                       results[i].H_RequestNumber, // Specify the LINE MINI App page.
                   },
                   style: "primary",
@@ -428,6 +428,7 @@ module.exports.pendingitems = async (req, res, next) => {
     let results = await executeSQL(sql);
     console.log(results.length);
     var bubbles = [];
+
     for (var i = 0; i < results.length; i++) {
       // Create a Bubble container
       var bubble = {
@@ -551,7 +552,6 @@ module.exports.pendingitems = async (req, res, next) => {
           spacing: "md",
         },
       };
-
       // Add the Bubble container to the array
       bubbles.push(bubble);
     }
@@ -565,7 +565,21 @@ module.exports.pendingitems = async (req, res, next) => {
       contents: carousel,
     };
 
-    client.pushMessage(lineID, flexMessage);
+    if (results.length > 0) {
+      client.pushMessage(lineID, flexMessage);
+    } else {
+      client.pushMessage(lineID, [
+        {
+          type: "text",
+          text: `น้องเป็ด ไม่พบรายการร้องขอปลดเครดิต ก้าบบๆ`,
+        },
+        {
+          type: "sticker",
+          packageId: 789,
+          stickerId: 10891,
+        },
+      ]);
+    }
 
     res.json({ Status: 200, data: "OK" }).status(200).end();
   } catch (error) {
