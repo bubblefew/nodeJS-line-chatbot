@@ -618,7 +618,7 @@ module.exports.moredetail = async (req, res, next) => {
     ,s.Sales_UserName , s.Sales_LineID as idApr2 , a.H_Approval1 ,a.H_Status
     ,(select sum(L_CustomerOrderAmount) from is.requestdetail where L_RequestNumber = '${reqno}') as Co_Amount
     ,(select sum(PM_Amount) from is.requestpayment where  PM_RequestNumber= '${reqno}') as Pay_Amount
-    ,(select  date(PM_DueDate)  from is.requestpayment where  PM_RequestNumber= '2023050001' limit 1 ) as Pay_Date
+    ,(select  date(PM_DueDate)  from is.requestpayment where  PM_RequestNumber= '${reqno}' limit 1 ) as Pay_Date
     ,o.OKCRL2 
     from is.requestheader a
     left join m3fdbprd.ocusma b on b.OKCONO = a.H_CompanyCode and  a.H_CustomerCode = b.OKCUNO
@@ -647,7 +647,7 @@ module.exports.moredetail = async (req, res, next) => {
       );
       let CR2 = results[i].OKCRL2.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       dayjs(results[i].Pay_Date); // parse
-      let Pay_Date = dayjs().format("YYYY-MM-DD"); // display
+      let Pay_Date = dayjs().format("dddd-MMM-YYYY"); // display
 
       var bubble = {
         type: "bubble",
@@ -739,7 +739,7 @@ module.exports.moredetail = async (req, res, next) => {
                         },
                         {
                           type: "text",
-                          text: `${CR2} Bath`,
+                          text: `${CR2} ฿`,
                           weight: "bold",
                           size: "xxs",
                           flex: 5,
@@ -785,7 +785,7 @@ module.exports.moredetail = async (req, res, next) => {
                         },
                         {
                           type: "text",
-                          text: `${Debt_Amount} Bath`,
+                          text: `${Debt_Amount} ฿`,
                           weight: "bold",
                           size: "xxs",
                           flex: 5,
@@ -831,7 +831,7 @@ module.exports.moredetail = async (req, res, next) => {
                         },
                         {
                           type: "text",
-                          text: `${Co_Amount} Bath`,
+                          text: `${Co_Amount} ฿`,
                           weight: "bold",
                           size: "xxs",
                           flex: 5,
@@ -877,7 +877,7 @@ module.exports.moredetail = async (req, res, next) => {
                         },
                         {
                           type: "text",
-                          text: `${Pay_Amount} Bath`,
+                          text: `${Pay_Amount} ฿`,
                           weight: "bold",
                           size: "xxs",
                           flex: 5,

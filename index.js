@@ -12,6 +12,10 @@ var UnlockCreditRouter = require("./routes/unlockCredit");
 var DialogflowRouter = require("./routes/dialogflow");
 const app = express();
 
+const dayjs = require("dayjs");
+dayjs("2023-05-16");
+console.log(dayjs().format("dddd-MMM-YYYY"));
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
