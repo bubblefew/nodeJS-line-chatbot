@@ -1,5 +1,6 @@
 const axios = require("axios");
-
+const dotenv = require("dotenv");
+dotenv.config().parsed;
 module.exports.getChatbotResponse = async (req, res, next) => {
   console.log("GPT AAA");
   const API_ENDPOINT =

@@ -33,9 +33,9 @@ module.exports.flexMessageRequestNotifacation = (cusCode, cusName, reqNo) => [
           text: `Reject Request Number : ${reqNo}`,
         },
         {
-          type: "uri",
+          type: "message",
           label: "More detail",
-          uri: `http://119.59.114.233:8080/CR_Control/P2.jsp?reqno=${reqNo}`,
+          text: `More detail request number : ${reqNo}`,
         },
       ],
       imageAspectRatio: "rectangle",

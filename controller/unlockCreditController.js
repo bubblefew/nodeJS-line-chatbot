@@ -2,6 +2,9 @@ const { exec } = require("child_process");
 const { executeSQL } = require("../resource/callMysql");
 const axios = require("axios");
 const qs = require("qs");
+const dotenv = require("dotenv");
+dotenv.config().parsed;
+
 module.exports.unlockCreditLimit = async (req, res, next) => {
   try {
     const jarPath = "D:/is/OIS2120_AUTO/dist/OIS2120_AUTO.jar";
@@ -23,7 +26,7 @@ module.exports.unlockCreditLimit = async (req, res, next) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://localhost:3000/api/v1/chatbot/successfuly",
+      url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/successfuly`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },

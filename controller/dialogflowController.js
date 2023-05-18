@@ -2,7 +2,8 @@ const { executeSQL } = require("../resource/callMysql");
 const config = require("../config/configClient");
 const axios = require("axios");
 const qs = require("qs");
-
+const dotenv = require("dotenv");
+dotenv.config().parsed;
 module.exports.dialogflow = async (req, res, next) => {
   let obj = "";
   try {
@@ -69,7 +70,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: `http://${process.env.HOST}:3000/api/v1/chatbot/howtoregis`,
+            url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/howtoregis`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -111,7 +112,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: `http://${process.env.HOST}:3000/api/v1/chatbot/pendingitems`,
+            url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/pendingitems`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -219,7 +220,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: `http://${process.env.HOST}:3000/api/v1/chatbot/tracking`,
+            url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/tracking`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -267,7 +268,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: `http://${process.env.HOST}:3000/api/v1/chatbot/message`,
+                url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/message`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -291,7 +292,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: `http://${process.env.HOST}:3000/api/v1/unlock/unlockcreditlimit`,
+                url: `http://${process.env.HOST_API}:3000/api/v1/unlock/unlockcreditlimit`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -362,7 +363,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: `http://${process.env.HOST}:3000/api/v1/chatbot/message`,
+                url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/message`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -438,7 +439,7 @@ module.exports.dialogflow = async (req, res, next) => {
               let config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: `http://${process.env.HOST}:3000/api/v1/chatbot/notireject`,
+                url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/notireject`,
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -479,6 +480,34 @@ module.exports.dialogflow = async (req, res, next) => {
               },
             ],
           };
+        }
+        break;
+      case "ViewDetail":
+        {
+          let requestNumber = req.body.queryResult.parameters["requestnumber"];
+          let lineID =
+            req.body.originalDetectIntentRequest.payload.data.source.userId;
+          let queryString = qs.stringify({
+            lineID: lineID,
+            reqno: requestNumber,
+          });
+          let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/moredetail`,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            data: queryString,
+          };
+          axios
+            .request(config)
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
         break;
       default:

@@ -2,7 +2,8 @@ const { executeSQL } = require("../resource/callMysql");
 const config = require("../config/configClient");
 const axios = require("axios");
 const qs = require("qs");
-
+const dotenv = require("dotenv");
+dotenv.config().parsed;
 module.exports.registerMember = async (req, res, next) => {
   // /api/v1/data/regitermember
   try {
@@ -19,7 +20,7 @@ module.exports.registerMember = async (req, res, next) => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `http://${process.env.HOST}:3000/api/v1/chatbot/register`,
+        url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/register`,
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },

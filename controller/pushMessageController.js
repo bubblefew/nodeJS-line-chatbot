@@ -2,10 +2,9 @@ const { executeSQL } = require("../resource/callMysql");
 const config = require("../config/configClient");
 const line = require("@line/bot-sdk");
 const dayjs = require("dayjs");
-const {
-  few,
-  flexMessageRequestNotifacation,
-} = require("../template/flexMessage");
+const { flexMessageRequestNotifacation } = require("../template/flexMessage");
+const dotenv = require("dotenv");
+dotenv.config().parsed;
 const client = new line.Client(config);
 function getRandomColor() {
   var letters = "0123456789ABCDEF";
@@ -143,7 +142,7 @@ module.exports.notiForRegister = async (req, res, next) => {
         },
         {
           type: "text",
-          text: "http://119.59.114.233:8080/CR_Control/login.jsp",
+          text: `http://${process.env.HOST_WEB}:8080/CR_Control/login.jsp`,
         },
       ])
       .then((res2) => {
@@ -183,7 +182,7 @@ module.exports.howtoregis = async (req, res, next) => {
                 type: "uri",
                 label: "Yes",
                 // uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
-                uri: `http://localhost:8080/CR_Control/register.jsp?lineID=${lineID}`,
+                uri: `http://${process.env.HOST_WEB}:8080/CR_Control/register.jsp?lineID=${lineID}`,
               },
               {
                 type: "postback",
@@ -366,12 +365,15 @@ module.exports.tracking = async (req, res, next) => {
                 {
                   type: "button",
                   action: {
-                    type: "uri",
-                    label: "View details",
-                    // uri: "http://119.59.114.233:8080/CR_Control/login.jsp", // Specify the LINE MINI App page.
-                    uri:
-                      `http://${process.env.HOST}:8080/CR_Control/P2.jsp?reqno=` +
-                      results[i].H_RequestNumber, // Specify the LINE MINI App page.
+                    // type: "uri",
+                    // label: "View details",
+                    // // uri: "http://119.59.114.233:8080/CR_Control/login.jsp", // Specify the LINE MINI App page.
+                    // uri:
+                    //   `http://${process.env.HOST_API}:8080/CR_Control/P2.jsp?reqno=` +
+                    //   results[i].H_RequestNumber, // Specify the LINE MINI App page.
+                    type: "message",
+                    label: "More detail",
+                    text: `More detail request number : ${results[i].H_RequestNumber}`,
                   },
                   style: "primary",
                   height: "sm",
@@ -536,9 +538,9 @@ module.exports.pendingitems = async (req, res, next) => {
                 {
                   type: "button",
                   action: {
-                    type: "uri",
-                    label: "View details",
-                    uri: "https://liff.line.me/123456-abcedfg/share", // Specify the LINE MINI App page.
+                    type: "message",
+                    label: "More detail",
+                    text: `More detail request number : ${results[i].H_RequestNumber}`,
                   },
                   style: "primary",
                   height: "sm",
@@ -628,22 +630,23 @@ module.exports.moredetail = async (req, res, next) => {
   // /api/v1/data/regitermember
   try {
     const { lineID, reqno } = req.body;
-    let sql = `select  a.H_CompanyCode ,a.H_DivisionCode ,a.H_RequestNumber ,a.H_CustomerCode ,a.H_UserRequest ,a.H_TransactionDate , b.OKCUNM , a.H_DebtAmount
-    ,s.Sales_UserName , s.Sales_LineID as idApr2 , a.H_Approval1 ,a.H_Status
-    ,(select sum(L_CustomerOrderAmount) from is.requestdetail where L_RequestNumber = '${reqno}') as Co_Amount
-    ,(select sum(PM_Amount) from is.requestpayment where  PM_RequestNumber= '${reqno}') as Pay_Amount
-    ,(select  date(PM_DueDate)  from is.requestpayment where  PM_RequestNumber= '${reqno}' limit 1 ) as Pay_Date
-    ,o.OKCRL2 
-    from is.requestheader a
-    left join m3fdbprd.ocusma b on b.OKCONO = a.H_CompanyCode and  a.H_CustomerCode = b.OKCUNO
-    left join is.salesman s on s.Sales_CompanyCode  = a.H_CompanyCode
-    left join m3fdbprd.ocusma o on a.H_CustomerCode = o.OKCUNO and o.OKCONO = a.H_CompanyCode 
-    and case when a.H_Status = '20' then a.H_Approval1 when a.H_Status = '30' then a.H_Approval2 else '-' end = s.Sales_UserName 
-    where a.H_CompanyCode = '10'
-    and a.H_DivisionCode = '101'
-    and a.H_RequestNumber = '${reqno}'`;
-    let results = await executeSQL(sql);
-    console.log(results);
+    // let sql = `select  a.H_CompanyCode ,a.H_DivisionCode ,a.H_RequestNumber ,a.H_CustomerCode ,a.H_UserRequest ,a.H_TransactionDate , b.OKCUNM , a.H_DebtAmount
+    // ,s.Sales_UserName , s.Sales_LineID as idApr2 , a.H_Approval1 ,a.H_Status
+    // ,(select sum(L_CustomerOrderAmount) from is.requestdetail where L_RequestNumber = '${reqno}') as Co_Amount
+    // ,(select sum(PM_Amount) from is.requestpayment where  PM_RequestNumber= '${reqno}') as Pay_Amount
+    // ,(select  date(PM_DueDate)  from is.requestpayment where  PM_RequestNumber= '${reqno}' limit 1 ) as Pay_Date
+    // ,b.OKCRL2
+    // from is.requestheader a
+    // left join m3fdbprd.ocusma b on b.OKCONO = a.H_CompanyCode and  a.H_CustomerCode = b.OKCUNO
+    // left join is.salesman s on s.Sales_CompanyCode  = a.H_CompanyCode
+    // and case when a.H_Status = '20' then a.H_Approval1 when a.H_Status = '30' then a.H_Approval2 else '-' end = s.Sales_UserName
+    // where a.H_CompanyCode = '10'
+    // and a.H_DivisionCode = '101'
+    // and a.H_RequestNumber = '${reqno}' `;
+    let sql = `CALL GetRequestDetails('${reqno}' , '${lineID}')`;
+    let few = await executeSQL(sql);
+    let results = few[0];
+    console.log(results[0]);
     var bubbles = [];
     for (var i = 0; i < results.length; i++) {
       // Create a Bubble container
@@ -961,13 +964,32 @@ module.exports.moredetail = async (req, res, next) => {
                 {
                   type: "button",
                   action: {
-                    type: "uri",
-                    label: "View details",
-                    uri: "https://liff.line.me/123456-abcedfg/share", // Specify the LINE MINI App page.
+                    type: "message",
+                    label: "Approve",
+                    text: `Approve Request Number : ${results[i].H_RequestNumber}`,
                   },
                   style: "primary",
                   height: "sm",
-                  color: "#BBDED6",
+                  color: "#73e600",
+                },
+              ],
+              spacing: "xs",
+              margin: "lg",
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                {
+                  type: "button",
+                  action: {
+                    type: "message",
+                    label: "Reject",
+                    text: `Reject Request Number : ${results[i].H_RequestNumber}`,
+                  },
+                  style: "primary",
+                  height: "sm",
+                  color: "#e60000",
                 },
               ],
               spacing: "xs",
@@ -991,8 +1013,21 @@ module.exports.moredetail = async (req, res, next) => {
       contents: carousel,
     };
 
-    client.pushMessage(lineID, flexMessage);
-
+    if (results.length > 0) {
+      client.pushMessage(lineID, flexMessage);
+    } else {
+      client.pushMessage(lineID, [
+        {
+          type: "text",
+          text: `น้องเป็ด ไม่พบรายการร้องขอปลดเครดิต ก้าบบๆ`,
+        },
+        {
+          type: "sticker",
+          packageId: 789,
+          stickerId: 10891,
+        },
+      ]);
+    }
     res.json({ Status: 200, data: "OK" }).status(200).end();
   } catch (error) {
     next(error);

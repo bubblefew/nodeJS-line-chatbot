@@ -60,7 +60,7 @@ async function handleEvent(event) {
             type: "uri",
             label: "Yes",
             // uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
-            uri: `http://localhost:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
+            uri: `http://${process.env.HOST_API}:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
           },
           {
             type: "postback",
@@ -94,7 +94,7 @@ async function handleEvent(event) {
             let config = {
               method: "post",
               maxBodyLength: Infinity,
-              url: "http://localhost:3000/api/v1/chatbot/message",
+              url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/message`,
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
               },
@@ -118,7 +118,7 @@ async function handleEvent(event) {
             let config = {
               method: "post",
               maxBodyLength: Infinity,
-              url: "http://localhost:3000/api/v1/unlock/unlockcreditlimit",
+              url: `http://${process.env.HOST_API}:3000/api/v1/unlock/unlockcreditlimit`,
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
               },
@@ -197,7 +197,7 @@ async function handleMessageEvent(event) {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://localhost:3000/api/v1/chatbot/tracking",
+      url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/tracking`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
