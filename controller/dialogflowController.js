@@ -377,6 +377,30 @@ module.exports.dialogflow = async (req, res, next) => {
                 .catch((error) => {
                   console.log(error);
                 });
+            } else if (rsl[0].H_Status === "30") {
+              let queryString = qs.stringify({
+                cono: "10",
+                divi: "101",
+                reqno: requestNumber,
+                lineId: event.source.userId,
+              });
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: `http://${process.env.HOST_API}:3000/api/v1/unlock/unlockcreditlimit`,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data: queryString,
+              };
+              axios
+                .request(config)
+                .then((response) => {
+                  console.log(JSON.stringify(response.data));
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             }
           } else {
             msg = `ระบบไม่สามารถทำการอนุมัติหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
