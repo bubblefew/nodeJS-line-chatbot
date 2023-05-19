@@ -19,6 +19,23 @@ module.exports.unlockCreditLimit = async (req, res, next) => {
       SET H_Status = '50' 
       WHERE H_RequestNumber='${reqno}' `;
     await executeSQL(sql);
+    let rsl =
+      await executeSQL(`select a.L_CompanyCode, a.L_DivisionCode, a.L_RequestNumber, a.L_CustomerOrder, a.L_CustomerOrderAmount 
+                  ,b.H_CustomerCode 
+                  from is.requestdetail a
+                  left join is.requestheader b on a.L_CompanyCode = b.H_CompanyCode and a.L_RequestNumber = b.H_RequestNumber  
+                  where a.L_CompanyCode = '10'
+                  and a.L_DivisionCode = '101'
+                  and a.L_RequestNumber = '${reqno}'`);
+
+    for (let i = 0; i < rsl.length; i++) {
+      let sqlLog = `INSERT INTO is.unlockcredit_log
+                  (LOG_CompanyCode, LOG_DivisionCode, LOG_TransactionDate, LOG_CustomerCode, LOG_CustomerOrder, LOG_Status)
+                  VALUES(10, '101', current_timestamp(), '${rsl[i].H_CustomerCode}', '${rsl[i].L_CustomerOrder}', '20');`;
+      console.log(sqlLog);
+      await executeSQL(sqlLog);
+    }
+
     let params = qs.stringify({
       lineID: lineId,
       reqno: reqno,
@@ -32,21 +49,21 @@ module.exports.unlockCreditLimit = async (req, res, next) => {
       },
       data: params,
     };
-    setTimeout(
-      await axios
-        .request(config)
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-          console.log(error);
-        }),
-      3000
-    );
+    await axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      }),
+      3000;
+
     res
       .send({ message: "Unlock Credit on M3 Successfuly!", Status: "OK" })
       .status(200)
       .end();
+
     // });
   } catch (error) {
     next(error);

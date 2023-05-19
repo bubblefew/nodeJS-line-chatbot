@@ -482,6 +482,82 @@ module.exports.dialogflow = async (req, res, next) => {
           };
         }
         break;
+      case "Reject":
+        {
+          let requestNumber = req.body.queryResult.parameters["requestnumber"];
+          console.log(requestNumber);
+
+          let sql = `select * from is.requestheader where H_RequestNumber = '${requestNumber}' and H_Status IN ('20','30')`;
+          let rsl = await executeSQL(sql);
+          let msg = "";
+          let stickerObj = {
+            type: "sticker",
+            packageId: "789",
+            stickerId: "10863",
+          };
+
+          if (rsl.length > 0) {
+            let sqlUpdateStatus = `UPDATE is.requestheader
+        SET H_Status = '10'
+        where H_CompanyCode = '10'
+        and H_DivisionCode = '101'
+        and H_RequestNumber  = '${requestNumber}'  
+        and cast(H_Status as DECIMAL)in  ('20','30');`;
+            let result = await executeSQL(sqlUpdateStatus);
+            msg = `ระบบทำการปฏิเสธหมายเลขคำขอเลขที่ ${requestNumber} เรียบร้อยแล้ว ก๊าบๆ`;
+            if (result.changedRows > 0) {
+              let lineID =
+                req.body.originalDetectIntentRequest.payload.data.source.userId;
+              let queryString = qs.stringify({
+                lineID: lineID,
+                reqno: requestNumber,
+              });
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/notireject`,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data: queryString,
+              };
+              axios
+                .request(config)
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          } else {
+            msg = `ระบบไม่สามารถทำการปฏิเสธหมายเลขคำขอเลขที่ ${requestNumber} น้องไม่พบหมายเลขรายการ ก๊าบๆ`;
+            stickerObj.packageId = "789";
+            stickerObj.stickerId = "10870";
+          }
+          obj = {
+            fulfillmentMessages: [
+              {
+                payload: {
+                  line: {
+                    type: "text",
+                    text: msg,
+                  },
+                },
+              },
+              {
+                payload: {
+                  line: {
+                    type: "sticker",
+                    packageId: stickerObj.packageId,
+                    stickerId: stickerObj.stickerId,
+                  },
+                },
+              },
+            ],
+          };
+        }
+        break;
       case "ViewDetail":
         {
           let requestNumber = req.body.queryResult.parameters["requestnumber"];
