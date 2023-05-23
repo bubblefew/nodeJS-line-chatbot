@@ -121,6 +121,7 @@ module.exports.cancel = async (req, res, next) => {
   }
 };
 
+
 module.exports.notiForRegister = async (req, res, next) => {
   try {
     console.log("notiForRegister");

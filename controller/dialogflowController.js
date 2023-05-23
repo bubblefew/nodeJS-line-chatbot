@@ -287,7 +287,7 @@ module.exports.dialogflow = async (req, res, next) => {
                 cono: "10",
                 divi: "101",
                 reqno: requestNumber,
-                lineId: event.source.userId,
+                lineId: rsl[0].H_UserRequest,
               });
               let config = {
                 method: "post",
@@ -382,7 +382,7 @@ module.exports.dialogflow = async (req, res, next) => {
                 cono: "10",
                 divi: "101",
                 reqno: requestNumber,
-                lineId: event.source.userId,
+                lineId: req.body.originalDetectIntentRequest.payload.data.source.userId,
               });
               let config = {
                 method: "post",

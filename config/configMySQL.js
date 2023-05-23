@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config().parsed;
 const config = {
   db: {
-    host: process.env.HOST,
+    host: "localhost",
     // host: "119.59.114.233",
     port: "3333",
     user: "root",
