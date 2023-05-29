@@ -594,8 +594,13 @@ module.exports.notireject = async (req, res, next) => {
   try {
     console.log("notireject");
     const { lineID, reqno } = req.body;
+    let sql = `select s.Sales_LineID 
+   from requestheader a
+   left join is.salesman s on s.Sales_UserName  = a.H_UserRequest 
+   where a.H_RequestNumber = '${reqno}'`
+   let rsl = await executeSQL(sql)
     client
-      .pushMessage(lineID, [
+      .pushMessage(rsl[0].Sales_LineID, [
         {
           type: "text",
           text: `หมายเลขคำขอปลดล็อคเครดิตเลขที่ ${reqno} ของนายท่านถูกปฏิเสธคำขอ`,

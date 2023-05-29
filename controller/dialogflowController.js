@@ -70,7 +70,7 @@ module.exports.dialogflow = async (req, res, next) => {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: `http://${process.env.HOST_API}:3000/api/v1/chatbot/howtoregis`,
+            url: `http://119.59.114.233:3000/api/v1/chatbot/howtoregis`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
             },

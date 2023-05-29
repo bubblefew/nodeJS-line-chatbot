@@ -60,7 +60,7 @@ async function handleEvent(event) {
             type: "uri",
             label: "Yes",
             // uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
-            uri: `http://${process.env.HOST_API}:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
+            uri: `http://119.59.114.233:8080/CR_Control/register.jsp?lineID=${event.source.userId}`,
           },
           {
             type: "postback",
