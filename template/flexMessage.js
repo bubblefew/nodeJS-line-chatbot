@@ -1,9 +1,4 @@
-module.exports.flexMessageRequestNotifacation = (
-  cusCode,
-  cusName,
-  reqNo,
-  statusUpdate
-) => [
+module.exports.flexMessageRequestNotifacation = (cusCode, cusName, reqNo) => [
   {
     type: "template",
     altText: "คำขอรายการปลดล็อคเครดิตลิมิต",
@@ -22,20 +17,25 @@ module.exports.flexMessageRequestNotifacation = (
         uri: "http://example.com/page/123",
       },
       actions: [
+        // {
+        //   type: "postback",
+        //   label: "Approve",
+        //   data: `Approve&${reqNo}&${statusUpdate}`,
+        // },
         {
-          type: "postback",
+          type: "message",
           label: "Approve",
-          data: `Approve&${reqNo}&${statusUpdate}`,
+          text: `Approve Request Number : ${reqNo}`,
         },
         {
-          type: "postback",
+          type: "message",
           label: "Reject",
-          data: `Reject&${reqNo}&${statusUpdate}`,
+          text: `Reject Request Number : ${reqNo}`,
         },
         {
-          type: "uri",
+          type: "message",
           label: "More detail",
-          uri: `https://siriphonnot.medium.com/%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87-webhook-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-node-js-%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-dialogflow-fulfillment-a1a0f61fc52b`,
+          text: `More detail request number : ${reqNo}`,
         },
       ],
       imageAspectRatio: "rectangle",
@@ -69,4 +69,50 @@ module.exports.messagesCantApprove = [
   { type: "text", text: "ไม่สามารถทำการอัพเดทสถานะได้ก๊าบ" },
   { type: "text", text: "สาเหตุ ถูกอนุมัติเเล้ว ปลดล็อคแล้ว" },
   { type: "sticker", packageId: "6136", stickerId: "10551380" },
+];
+
+module.exports.few = [
+  {
+    type: "template",
+    altText: "คำขอรายการปลดล็อคเครดิตลิมิต",
+    template: {
+      type: "buttons",
+      thumbnailImageUrl:
+        "https://plus.unsplash.com/premium_photo-1664202219850-0ed2a085aaa9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80",
+      imageAspectRatio: "rectangle",
+      imageSize: "cover",
+      imageBackgroundColor: "#FFFFFF",
+      title: `Unlock Credit No:`,
+      text: `Customer Code:  `,
+      defaultAction: {
+        type: "uri",
+        label: "View detail",
+        uri: "http://example.com/page/123",
+      },
+      actions: [
+        // {
+        //   type: "postback",
+        //   label: "Approve",
+        //   data: `Approve&${reqNo}&${statusUpdate}`,
+        // },
+        {
+          type: "message",
+          label: "Approve",
+          text: `Approve Request Number : `,
+        },
+        {
+          type: "message",
+          label: "Reject",
+          text: `Reject Request Number : `,
+        },
+        {
+          type: "uri",
+          label: "More detail",
+          uri: `http://119.59.114.233:8080/CR_Control/P2.jsp?reqno=`,
+        },
+      ],
+      imageAspectRatio: "rectangle",
+      imageSize: "cover",
+    },
+  },
 ];
